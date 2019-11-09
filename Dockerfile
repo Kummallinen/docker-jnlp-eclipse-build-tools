@@ -21,8 +21,14 @@
 #  THE SOFTWARE.
 
 FROM kummallinen/eclipse-build-tools:latest
-LABEL Description="This is a base image, which allows connecting Jenkins agents via JNLP protocols" Vendor="Jenkins project" Version="3.27"
+LABEL Description="This is a base image, which allows connecting Jenkins agents via JNLP protocols" Vendor="Jenkins project" Version="3.35-2"
 
-COPY jenkins-slave /usr/local/bin/jenkins-slave
+ARG user=jenkins
 
-ENTRYPOINT ["jenkins-slave"]
+USER root
+COPY jenkins-agent /usr/local/bin/jenkins-agent
+RUN chmod +x /usr/local/bin/jenkins-agent &&\
+    ln -s /usr/local/bin/jenkins-agent /usr/local/bin/jenkins-slave
+USER ${user}
+
+ENTRYPOINT ["jenkins-agent"]
